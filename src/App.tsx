@@ -1,8 +1,25 @@
 import React, { useState, useRef, useMemo } from 'react';
-import { Upload, FileText, Image as ImageIcon, Lock, Loader2, Download, Trash2, TrendingUp, TrendingDown } from 'lucide-react';
+import { Upload, FileText, Image as ImageIcon, Lock, Loader2, Download, Trash2, TrendingUp, TrendingDown, Building2, CreditCard } from 'lucide-react';
 import { convertPdfToImages, convertImageToBase64 } from './lib/pdfUtils';
-import { extractTransactions, Transaction } from './services/geminiService';
+import { extractTransactions, Transaction, BankProfile, StatementType } from './services/geminiService';
 import { cn } from './lib/utils';
+
+const BANK_PROFILES: BankProfile[] = [
+  'Auto-detect',
+  'BCA',
+  'Mandiri',
+  'BNI',
+  'BRI',
+  'CIMB Niaga',
+  'Jenius',
+  'Jago'
+];
+
+const STATEMENT_TYPES: StatementType[] = [
+  'Auto-detect',
+  'Savings/Current',
+  'Credit Card'
+];
 
 export default function App() {
   const [file, setFile] = useState<File | null>(null);
@@ -11,6 +28,8 @@ export default function App() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [selectedBank, setSelectedBank] = useState<BankProfile>('Auto-detect');
+  const [statementType, setStatementType] = useState<StatementType>('Auto-detect');
   
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -83,7 +102,7 @@ export default function App() {
         throw new Error('Unsupported file type. Please upload a PDF or Image.');
       }
       
-      const extractedData = await extractTransactions(images);
+      const extractedData = await extractTransactions(images, selectedBank, statementType);
       setTransactions(extractedData);
     } catch (err: any) {
       if (err.message === 'PASSWORD_REQUIRED') {
@@ -140,6 +159,56 @@ export default function App() {
             <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
               <h2 className="text-lg font-medium mb-4">Upload Statement</h2>
               
+              <div className="mb-6 space-y-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                    <Building2 className="w-4 h-4 text-gray-500" />
+                    Bank Profile
+                  </label>
+                  <select
+                    value={selectedBank}
+                    onChange={(e) => setSelectedBank(e.target.value as BankProfile)}
+                    className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  >
+                    {BANK_PROFILES.map(bank => (
+                      <option key={bank} value={bank}>{bank}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                    <CreditCard className="w-4 h-4 text-gray-500" />
+                    Statement Type
+                  </label>
+                  <select
+                    value={statementType}
+                    onChange={(e) => setStatementType(e.target.value as StatementType)}
+                    className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  >
+                    {STATEMENT_TYPES.map(type => (
+                      <option key={type} value={type}>{type}</option>
+                    ))}
+                  </select>
+                  
+                  {selectedBank === 'CIMB Niaga' && statementType === 'Auto-detect' && (
+                    <p className="text-xs text-amber-600 mt-1">
+                      * For CIMB Combined Statements, it's recommended to select a specific statement type.
+                    </p>
+                  )}
+                  {selectedBank === 'CIMB Niaga' && statementType === 'Savings/Current' && (
+                    <p className="text-xs text-amber-600 mt-1">
+                      * Only Saving/Current Account transactions will be extracted.
+                    </p>
+                  )}
+                  {selectedBank === 'CIMB Niaga' && statementType === 'Credit Card' && (
+                    <p className="text-xs text-amber-600 mt-1">
+                      * Only Credit Card transactions will be extracted.
+                    </p>
+                  )}
+                </div>
+              </div>
+
               {!file ? (
                 <div 
                   className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:bg-gray-50 transition-colors cursor-pointer"
