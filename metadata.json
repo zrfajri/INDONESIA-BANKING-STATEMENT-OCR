@@ -1,0 +1,5 @@
+{
+  "name": "IndoBank Statement OCR",
+  "description": "Extract transactions from Indonesian bank statements (credit card and savings) using Gemini 3.1 Pro. Supports password-protected PDFs and images, exporting to CSV.",
+  "requestFramePermissions": []
+}
