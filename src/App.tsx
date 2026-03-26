@@ -7,12 +7,12 @@ import { cn } from './lib/utils';
 const BANK_PROFILES: BankProfile[] = [
   'Auto-detect',
   'BCA',
-  'Mandiri',
   'BNI',
-  'BRI',
   'CIMB Niaga',
-  'Jenius',
-  'Jago'
+  'Danamon',
+  'Mandiri',
+  'Mayapada',
+  'UOB'
 ];
 
 const STATEMENT_TYPES: StatementType[] = [

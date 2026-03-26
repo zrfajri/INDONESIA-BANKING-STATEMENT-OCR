@@ -10,7 +10,7 @@ export interface Transaction {
   category: string;
 }
 
-export type BankProfile = 'Auto-detect' | 'BCA' | 'Mandiri' | 'BNI' | 'BRI' | 'CIMB Niaga' | 'Jenius' | 'Jago';
+export type BankProfile = 'Auto-detect' | 'BCA' | 'BNI' | 'CIMB Niaga' | 'Danamon' | 'Mandiri' | 'Mayapada' | 'UOB';
 export type StatementType = 'Auto-detect' | 'Savings/Current' | 'Credit Card';
 
 export async function extractTransactions(
