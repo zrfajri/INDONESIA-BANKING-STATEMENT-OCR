@@ -10,7 +10,7 @@ export interface Transaction {
   category: string;
 }
 
-export type BankProfile = 'Auto-detect' | 'BCA' | 'BNI' | 'CIMB Niaga' | 'Danamon' | 'Mandiri' | 'Mayapada' | 'UOB';
+export type BankProfile = 'Auto-detect' | 'BCA' | 'BNI' | 'CIMB Niaga' | 'Danamon' | 'Krom' | 'Mandiri' | 'Mayapada' | 'UOB';
 export type StatementType = 'Auto-detect' | 'Savings/Current' | 'Credit Card';
 
 export async function extractTransactions(
@@ -35,7 +35,7 @@ export async function extractTransactions(
     prompt += "The statement might be a credit card or savings account. ";
   }
 
-  prompt += "Return a JSON array of objects. For each transaction, provide the date (YYYY-MM-DD), description, amount (as a positive number), type ('Inflow' or 'Outflow'), and auto-detect a category based on the description (e.g., 'Groceries', 'Dining', 'Utilities', 'Transfer', 'Salary', 'Entertainment', 'Shopping', etc.). Ignore non-transaction text like headers, footers, or summary balances. Ensure amounts are parsed correctly (Indonesian format often uses '.' for thousands and ',' for decimals, or vice versa depending on the bank).";
+  prompt += "Return a JSON array of objects. For each transaction, provide the date (YYYY-MM-DD), description, amount (as a positive number), type ('Inflow' or 'Outflow'), and auto-detect a category based on the description. Use specific categories tailored to Indonesian transactions, for example: 'E-Wallet/Top Up' (e.g., GoPay, OVO, Dana, ShopeePay), 'Utilities/Bills' (e.g., PLN, PDAM, Telkomsel, Indihome), 'Dining/F&B' (e.g., GoFood, GrabFood, cafes, restaurants), 'Groceries' (e.g., Indomaret, Alfamart, Superindo), 'E-Commerce/Shopping' (e.g., Tokopedia, Shopee, Lazada), 'Transportation/Fuel' (e.g., Gojek, Grab, SPBU, Pertamina, KAI), 'Transfer/QRIS' (e.g., BI-FAST, QRIS, Trf), 'Income/Salary' (e.g., Payroll, Gaji), 'Bank Fees/Admin' (e.g., Biaya Admin, Pajak, Materai). Ignore non-transaction text like headers, footers, or summary balances. Ensure amounts are parsed correctly (Indonesian format often uses '.' for thousands and ',' for decimals, or vice versa depending on the bank).";
 
   if (bankProfile === 'CIMB Niaga') {
     if (statementType === 'Credit Card') {

@@ -10,6 +10,7 @@ const BANK_PROFILES: BankProfile[] = [
   'BNI',
   'CIMB Niaga',
   'Danamon',
+  'Krom',
   'Mandiri',
   'Mayapada',
   'UOB'
